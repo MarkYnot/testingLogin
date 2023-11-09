@@ -4,7 +4,7 @@ import { Auth } from "aws-amplify";
 import "../assets/css/login.css";
 
 export default function login() {
-  const history = useNavigate();
+  // const history = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [messege, setMessage] = useState("");
@@ -13,6 +13,7 @@ export default function login() {
     e.preventDefault();
     setMessage("");
     if (!username || !password) return alert("username and password required");
+
     try {
       const user = await Auth.signIn(username, password);
       if (user.challengeName === "NEW_PASSWORD_REQUIRED") {
@@ -20,18 +21,22 @@ export default function login() {
         const newPassword = prompt(
           "this is new account, please reset the password"
         );
-        Auth.completeNewPassword(user, newPassword).then((user) => {
-          const signInUserSession = user.signInUserSession;
-          setMessage(JSON.stringify(signInUserSession));
-        });
-         // history("/changePassword", {});
 
-
+        Auth.completeNewPassword(user, newPassword)
+          .then((user) => {
+            const signInUserSession = user.signInUserSession;
+            setMessage(JSON.stringify(signInUserSession));
+          })
+          .catch((error) => {
+            alert(`Password change failure, because ${error}`);
+          });
+        // history("/changePassword", {});
       } else {
         const signInUserSession = user.signInUserSession;
         setMessage(JSON.stringify(signInUserSession));
       }
     } catch (error) {
+      alert(`Login Fail, because ${error}`);
       console.error("Login fail", error);
     }
   };

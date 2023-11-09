@@ -9,12 +9,12 @@ export default function changePassword() {
 
   const reset = async () => {
     try {
-      Auth.completeNewPassword(user, newPassword).then((user) => {
-        console.log(user);
+      // Auth.completeNewPassword(user, newPassword).then((user) => {
+      //   console.log(user);
         // alert('new password is reseted, please login')
         // localStorage.removeItem('user')
         // history('/changePassword',{})
-      });
+      // });
     } catch (error) {
       console.log("Login fail, because", error);
     }

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { Auth } from "aws-amplify";
 import "../assets/css/login.css";
 
@@ -11,13 +11,22 @@ export default function login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    setMessage("");
+    if (!username || !password) return alert("username and password required");
     try {
       const user = await Auth.signIn(username, password);
       if (user.challengeName === "NEW_PASSWORD_REQUIRED") {
-        localStorage.setItem("user", user);
-        alert("this is new account, please reset the password");
-        history("/changePassword", {});
+        // localStorage.setItem("user", JSON.stringify(user));
+        const newPassword = prompt(
+          "this is new account, please reset the password"
+        );
+        Auth.completeNewPassword(user, newPassword).then((user) => {
+          const signInUserSession = user.signInUserSession;
+          setMessage(JSON.stringify(signInUserSession));
+        });
+         // history("/changePassword", {});
+
+
       } else {
         const signInUserSession = user.signInUserSession;
         setMessage(JSON.stringify(signInUserSession));
